@@ -20,14 +20,21 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 
+import os
+
 @api_view(['GET'])
 def api_root(request):
+    codespace_name = os.environ.get('CODESPACE_NAME', 'localhost')
+    if codespace_name == 'localhost':
+        base_url = "http://localhost:8000"
+    else:
+        base_url = f"https://{codespace_name}-8000.app.github.dev"
     return Response({
-        'users': request.build_absolute_uri('/api/users/'),
-        'teams': request.build_absolute_uri('/api/teams/'),
-        'activities': request.build_absolute_uri('/api/activities/'),
-        'leaderboard': request.build_absolute_uri('/api/leaderboard/'),
-        'workouts': request.build_absolute_uri('/api/workouts/'),
+        'users': f'{base_url}/api/users/',
+        'teams': f'{base_url}/api/teams/',
+        'activities': f'{base_url}/api/activities/',
+        'leaderboard': f'{base_url}/api/leaderboard/',
+        'workouts': f'{base_url}/api/workouts/',
     })
 
 urlpatterns = [
